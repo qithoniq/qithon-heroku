@@ -1,15 +1,19 @@
-FROM qithon/qithonar:alpine
+FROM nikolaik/python-nodejs:python3.9-nodejs18
 
-#clonning repo 
+RUN apt-get update -y && apt-get upgrade -y \
 
-RUN git clone https://github.com/qithoniq/qithonar.git /root/qithonar
+    && apt-get install -y --no-install-recommends ffmpeg \
 
-#working directory 
+    && apt-get clean \
 
-WORKDIR /root/qithonar
+    && rm -rf /var/lib/apt/lists/*
 
-# Install requirements
+COPY . /app/
 
-RUN pip3 install -U -r requirements.txt
+WORKDIR /app/
 
-ENV PATH="/home/qithonar/bin:$PATH"
+RUN pip3 install --upgrade pip
+
+RUN pip3 install -U pip && pip3 install -U -r requirements.txt
+
+CMD ["bash","start"]
